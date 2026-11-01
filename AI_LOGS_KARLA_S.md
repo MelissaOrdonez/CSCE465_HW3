@@ -434,3 +434,90 @@ Task 4 = limit the damage if exploitation still happens
 
 ```
 
+prompt #10:
+I need to test the fixed parser with the payload file, but I’m not sure where the payload file is located or what path to use. What commands should I run to find it and then test `legacy_log_parser_fixed` with it?
+
+response: 
+First, from the `src` directory, search the nearby folders for any payload/exploit/bin files:
+
+```bash
+find .. -maxdepth 3 -type f | grep -E 'payload|exploit|bin'
+```
+
+That should show you where `payload.bin` is located. If it shows:
+
+```text
+../payload.bin
+```
+
+then run the fixed parser with:
+
+```bash
+./legacy_log_parser_fixed ../payload.bin
+```
+
+The fixed version should reject the oversized input and print something like:
+
+```text
+Input too large
+```
+
+That confirms the fix is working.
+
+prompt #11: Im on Task 4 and I need to make the AppArmor profile for the vulnerable parser. The profile needs to let it read payload.bin, only write to the markers directory, block /opt/agentsec/decoy.txt, and stop it from running shells or unrelated programs. My vulnerable binary is src/legacy_log_parser. Can you help me create policy/apparmor.profile step by step?
+
+
+
+response: 
+From the root of your repo, first create/open the required profile file:
+mkdir -p policy
+nano policy/apparmor.profile
+
+Paste:
+#include <tunables/global>
+
+/home/ubuntu/csce465-agentsec/hw3/CSCE465_HW3/src/legacy_log_parser {
+  #include <abstractions/base>
+
+  /home/ubuntu/csce465-agentsec/hw3/CSCE465_HW3/payload.bin r,
+
+  /home/ubuntu/csce465-agentsec/hw3/CSCE465_HW3/markers/ rw,
+  /home/ubuntu/csce465-agentsec/hw3/CSCE465_HW3/markers/** rw,
+
+  audit deny /opt/agentsec/decoy.txt rwklx,
+
+  deny /bin/sh x,
+  deny /bin/bash x,
+  deny /usr/bin/dash x,
+}
+
+Save with:
+Ctrl+O
+Enter
+Ctrl+X
+
+This creates the required policy/apparmor.profile and maps the policy directly to the five requirements in Task 4. The next step would be validating and loading the profile with apparmor_parser.
+
+
+prompt #12: 
+I finished creating my AppArmor profile for legacy_log_parser. What commands should I use to first check that the profile syntax is valid, then load/reload the profile, and finally verify that AppArmor recognizes the parser as confined?
+
+response: 
+
+
+Response:
+From the hw3 directory, run:
+
+sudo apparmor_parser -Q policy/apparmor.profile
+sudo apparmor_parser -r policy/apparmor.profile
+sudo aa-status | grep legacy_log_parser
+
+What each command does:
+
+sudo apparmor_parser -Q policy/apparmor.profile checks/parses the AppArmor profile without loading it normally. This is useful for catching profile syntax errors first.
+
+sudo apparmor_parser -r policy/apparmor.profile loads the profile, or replaces the currently loaded version if it already exists.
+
+sudo aa-status | grep legacy_log_parser checks the active AppArmor profiles and confirms that the legacy_log_parser profile was successfully loaded.
+
+If the last command prints the path/name of legacy_log_parser, the profile is loaded and you can move on to running the vulnerable payload as the agentlab user under confinement.

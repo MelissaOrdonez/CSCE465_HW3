@@ -64,6 +64,8 @@ static void vulnerable_copy(const unsigned char *input, size_t n){
   char buf[BUF_SIZE];
   /* Copy n bytes from input into buf without checking n against BUF_SIZE -- missing check is the vulnerability */
 
+  // if n > BUF_SIZE: exit/error 
+
   for(volatile size_t i = 0; i < n; i++){
     buf[i] = input[i];
   }
