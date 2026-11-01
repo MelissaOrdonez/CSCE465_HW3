@@ -58,3 +58,27 @@ Log entry 9:
 
 Used AI to clarify what successful containment would look like if the vulnerable parser was still exploited. I wanted to understand how AppArmor could block the program from accessing the protected file even though the exploit itself still successfully changed the program's control flow.
 
+
+
+Log entry 10:
+
+
+
+Used AI to help me find the payload file and test the fixed parser with it. I was not sure where payload.bin was located or what path I needed to use, so AI helped me find the file and run legacy\_log\_parser\_fixed with the correct path.
+
+
+
+Log entry 11:
+
+
+
+Used AI to help me create the AppArmor profile for the vulnerable parser. I needed the profile to allow access to payload.bin and the markers directory while blocking access to the protected decoy file and preventing the parser from executing shells or unrelated programs.
+
+
+
+Log entry 12:
+
+
+
+Used AI to help me validate and load the AppArmor profile after creating it. I wanted to make sure the profile syntax was correct, reload it properly, and verify that AppArmor recognized legacy\_log\_parser as a confined program.
+
