@@ -7,7 +7,7 @@ description: Parses a file from the hw3/inbox directory
 Runs the legacy_log_parser on an input file 
 
 ## Execution 
-Run `skills/legacy/parser/legacy-parser.sh` with the argument of the absolute path of the input file
+Run `skills/legacy_parser/run_parser.sh` with the argument of the absolute path of the input file
 
 ## Output
 Reports the legacy_log_parser's output
